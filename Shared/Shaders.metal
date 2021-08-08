@@ -31,11 +31,12 @@ struct Vertex
 {
     simd_float2 position;
     simd_float4 color;
+    simd_float4 colorID;
 };
 
 vertex RasterizerData vertexShader( uint vertexID [[vertex_id]],
                                    constant Vertex *vertices [[buffer(0)]], // Index of vertices data
-                                   constant vector_uint2 *viewportSizePointer [[buffer(1)]])
+                                   constant vector_float2 *viewportSizePointer [[buffer(1)]])
 {
     RasterizerData out;
     

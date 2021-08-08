@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		164353C325B386BA006BB3E1 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 164353C225B386BA006BB3E1 /* Shaders.metal */; };
 		164353C425B386BA006BB3E1 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 164353C225B386BA006BB3E1 /* Shaders.metal */; };
+		1686BD5026BD3D4100D162EA /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686BD4F26BD3D4100D162EA /* Quad.swift */; };
+		1686BD5126BD3D4100D162EA /* Quad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686BD4F26BD3D4100D162EA /* Quad.swift */; };
 		169A341425A6C34500692EA3 /* CustomMetalViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169A340125A6C34400692EA3 /* CustomMetalViewApp.swift */; };
 		169A341525A6C34500692EA3 /* CustomMetalViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169A340125A6C34400692EA3 /* CustomMetalViewApp.swift */; };
 		169A341625A6C34500692EA3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169A340225A6C34400692EA3 /* ContentView.swift */; };
@@ -25,12 +27,13 @@
 		164353BD25B270D5006BB3E1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		164353C225B386BA006BB3E1 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		1643540325BD386B006BB3E1 /* Bridging_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bridging_Header.h; sourceTree = "<group>"; };
+		1686BD4F26BD3D4100D162EA /* Quad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quad.swift; sourceTree = "<group>"; };
 		169A340125A6C34400692EA3 /* CustomMetalViewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMetalViewApp.swift; sourceTree = "<group>"; };
 		169A340225A6C34400692EA3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		169A340325A6C34500692EA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		169A340825A6C34500692EA3 /* SwiftUI_HelloTriangle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUI_HelloTriangle.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		169A340825A6C34500692EA3 /* SwiftUI_QuadSelection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUI_QuadSelection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		169A340B25A6C34500692EA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		169A341025A6C34500692EA3 /* SwiftUI_HelloTriangle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUI_HelloTriangle.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		169A341025A6C34500692EA3 /* SwiftUI_QuadSelection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUI_QuadSelection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		169A341225A6C34500692EA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		169A341325A6C34500692EA3 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		169A342425A6C54200692EA3 /* SwiftUIMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIMetalView.swift; sourceTree = "<group>"; };
@@ -76,6 +79,7 @@
 				169A344525A805CB00692EA3 /* Renderer.swift */,
 				164353C225B386BA006BB3E1 /* Shaders.metal */,
 				1643540325BD386B006BB3E1 /* Bridging_Header.h */,
+				1686BD4F26BD3D4100D162EA /* Quad.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -83,8 +87,8 @@
 		169A340925A6C34500692EA3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				169A340825A6C34500692EA3 /* SwiftUI_HelloTriangle.app */,
-				169A341025A6C34500692EA3 /* SwiftUI_HelloTriangle.app */,
+				169A340825A6C34500692EA3 /* SwiftUI_QuadSelection.app */,
+				169A341025A6C34500692EA3 /* SwiftUI_QuadSelection.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -109,9 +113,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		169A340725A6C34500692EA3 /* SwiftUI_HelloTriangle (iOS) */ = {
+		169A340725A6C34500692EA3 /* SwiftUI_QuadSelection (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 169A341C25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_HelloTriangle (iOS)" */;
+			buildConfigurationList = 169A341C25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_QuadSelection (iOS)" */;
 			buildPhases = (
 				169A340425A6C34500692EA3 /* Sources */,
 				169A340525A6C34500692EA3 /* Frameworks */,
@@ -121,14 +125,14 @@
 			);
 			dependencies = (
 			);
-			name = "SwiftUI_HelloTriangle (iOS)";
+			name = "SwiftUI_QuadSelection (iOS)";
 			productName = "CustomMetalView (iOS)";
-			productReference = 169A340825A6C34500692EA3 /* SwiftUI_HelloTriangle.app */;
+			productReference = 169A340825A6C34500692EA3 /* SwiftUI_QuadSelection.app */;
 			productType = "com.apple.product-type.application";
 		};
-		169A340F25A6C34500692EA3 /* SwiftUI_HelloTriangle (macOS) */ = {
+		169A340F25A6C34500692EA3 /* SwiftUI_QuadSelection (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 169A341F25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_HelloTriangle (macOS)" */;
+			buildConfigurationList = 169A341F25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_QuadSelection (macOS)" */;
 			buildPhases = (
 				169A340C25A6C34500692EA3 /* Sources */,
 				169A340D25A6C34500692EA3 /* Frameworks */,
@@ -138,9 +142,9 @@
 			);
 			dependencies = (
 			);
-			name = "SwiftUI_HelloTriangle (macOS)";
+			name = "SwiftUI_QuadSelection (macOS)";
 			productName = "CustomMetalView (macOS)";
-			productReference = 169A341025A6C34500692EA3 /* SwiftUI_HelloTriangle.app */;
+			productReference = 169A341025A6C34500692EA3 /* SwiftUI_QuadSelection.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -162,7 +166,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 169A33FF25A6C34400692EA3 /* Build configuration list for PBXProject "SwiftUI_HelloTriangle" */;
+			buildConfigurationList = 169A33FF25A6C34400692EA3 /* Build configuration list for PBXProject "SwiftUI_QuadSelection" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -175,8 +179,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				169A340725A6C34500692EA3 /* SwiftUI_HelloTriangle (iOS) */,
-				169A340F25A6C34500692EA3 /* SwiftUI_HelloTriangle (macOS) */,
+				169A340725A6C34500692EA3 /* SwiftUI_QuadSelection (iOS) */,
+				169A340F25A6C34500692EA3 /* SwiftUI_QuadSelection (macOS) */,
 			);
 		};
 /* End PBXProject section */
@@ -205,6 +209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1686BD5026BD3D4100D162EA /* Quad.swift in Sources */,
 				169A344625A805CB00692EA3 /* Renderer.swift in Sources */,
 				169A341625A6C34500692EA3 /* ContentView.swift in Sources */,
 				169A342525A6C54200692EA3 /* SwiftUIMetalView.swift in Sources */,
@@ -217,6 +222,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1686BD5126BD3D4100D162EA /* Quad.swift in Sources */,
 				169A344725A805CB00692EA3 /* Renderer.swift in Sources */,
 				169A341725A6C34500692EA3 /* ContentView.swift in Sources */,
 				169A342625A6C54200692EA3 /* SwiftUIMetalView.swift in Sources */,
@@ -355,7 +361,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sijostudios.CustomMetalView;
-				PRODUCT_NAME = SwiftUI_HelloTriangle;
+				PRODUCT_NAME = SwiftUI_QuadSelection;
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = Shared/Bridging_Header.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -380,7 +386,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sijostudios.CustomMetalView;
-				PRODUCT_NAME = SwiftUI_HelloTriangle;
+				PRODUCT_NAME = SwiftUI_QuadSelection;
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = Shared/Bridging_Header.h;
 				SWIFT_VERSION = 5.0;
@@ -396,6 +402,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = LL3S2294AK;
@@ -407,8 +414,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sijostudios.CustomMetalView;
-				PRODUCT_NAME = SwiftUI_HelloTriangle;
+				PRODUCT_BUNDLE_IDENTIFIER = helloTriangle.swift.com;
+				PRODUCT_NAME = SwiftUI_QuadSelection;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = Shared/Bridging_Header.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -423,6 +430,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = LL3S2294AK;
@@ -434,8 +442,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sijostudios.CustomMetalView;
-				PRODUCT_NAME = SwiftUI_HelloTriangle;
+				PRODUCT_BUNDLE_IDENTIFIER = helloTriangle.swift.com;
+				PRODUCT_NAME = SwiftUI_QuadSelection;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = Shared/Bridging_Header.h;
 				SWIFT_VERSION = 5.0;
@@ -445,7 +453,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		169A33FF25A6C34400692EA3 /* Build configuration list for PBXProject "SwiftUI_HelloTriangle" */ = {
+		169A33FF25A6C34400692EA3 /* Build configuration list for PBXProject "SwiftUI_QuadSelection" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				169A341A25A6C34500692EA3 /* Debug */,
@@ -454,7 +462,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		169A341C25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_HelloTriangle (iOS)" */ = {
+		169A341C25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_QuadSelection (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				169A341D25A6C34500692EA3 /* Debug */,
@@ -463,7 +471,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		169A341F25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_HelloTriangle (macOS)" */ = {
+		169A341F25A6C34500692EA3 /* Build configuration list for PBXNativeTarget "SwiftUI_QuadSelection (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				169A342025A6C34500692EA3 /* Debug */,

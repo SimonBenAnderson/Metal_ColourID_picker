@@ -15,6 +15,8 @@ struct Vertex
 {
     var position: simd_float2
     var color: simd_float4
+    /// Used for color id picking
+    var colorID: simd_float4
 }
 
 class Renderer : NSObject, MTKViewDelegate {
@@ -37,7 +39,10 @@ class Renderer : NSObject, MTKViewDelegate {
     
     // The current size of the view, used as an input to the vertex shader
     // Initialises the variable, as it will have its values populated on init
-    var viewportSize: simd_uint2 = simd_uint2()
+    var viewportSize: simd_float2 = simd_float2()
+    
+    /// List of quad objects that will be drawn on screen
+    var quads:Array<Quad> = []
     
     /// SwiftMTKView is the wrapper to allow the MTKView to work in SwiftUI
     init(_ parent: SwiftMTKView, mtkView:MTKView) {
@@ -59,8 +64,8 @@ class Renderer : NSObject, MTKViewDelegate {
 //        view.preferredFramesPerSecond = 120
         
 //        view.drawableSize = view.frame.size
-        viewportSize.x = UInt32(view.frame.size.width)
-        viewportSize.y = UInt32(view.frame.size.height)
+        viewportSize.x = Float(view.frame.size.width)
+        viewportSize.y = Float(view.frame.size.height)
         
         // needed for ZDepth
 //        view.depthStencilPixelFormat = .depth32Float
@@ -103,6 +108,26 @@ class Renderer : NSObject, MTKViewDelegate {
         // Now that all of our members are initialized, set ourselves as the drawing delegate of the view
         view.delegate = self
         view.device = device
+        
+        setupQuad()
+    }
+    
+    /// Initialises the quad data, 
+    func setupQuad() {
+        // Creates the new quads that will be drawn
+        let q1 = newQuad()
+        let q2 = newQuad()
+        quads.append(q1)
+        quads.append(q2)
+        
+        q1.offset = [-200, 0]
+        q2.offset = [ 200, 0]
+        
+        q1.color = [0.4, 0.4, 0.4, 1]
+        q2.color = [0.4, 0.4, 0.4, 1]
+        
+        q1.updateVerts()
+        q2.updateVerts()
     }
     
     open func render(_ view: MTKView)
@@ -118,13 +143,7 @@ class Renderer : NSObject, MTKViewDelegate {
     }
     
     open func draw(_ view: MTKView, _ commandBuffer_: MTLCommandBuffer) {
-        
-        let triangleVertices : Array<Vertex> = [
-            Vertex(position: simd_float2( 250, -250), color: simd_float4(1, 0, 0, 1)),
-            Vertex(position: simd_float2(-250, -250), color: simd_float4(0, 1, 0, 1)),
-            Vertex(position: simd_float2(   0,  250), color: simd_float4(0, 0, 1, 1))
-        ]
-        
+
         // Create a new command buffer for each render pass to the current drawable.
         let commandBuffer = commandQueue.makeCommandBuffer()!
         commandBuffer.label = "MyCommand"
@@ -146,19 +165,24 @@ class Renderer : NSObject, MTKViewDelegate {
         
         renderEncoder.setRenderPipelineState(renderPipelineState)
         
+        var quadVerts:Array<Vertex> = []
+        for quad in quads {
+            quadVerts.append(contentsOf: quad._vertices)
+        }
+        
         // Pass in the parameter data.
-        renderEncoder.setVertexBytes(triangleVertices,
-                                     length: MemoryLayout<Vertex>.stride * triangleVertices.count,
+        renderEncoder.setVertexBytes(quadVerts,
+                                     length: MemoryLayout<Vertex>.stride * (quadVerts.count),
                                      index: 0)
         
         renderEncoder.setVertexBytes(&viewportSize,
                                      length: MemoryLayout<simd_uint2>.stride,
                                      index: 1)
         
-        // Draw the triangle.
+        // Draw the buffer using triangles
         renderEncoder.drawPrimitives(type: .triangle,
                                      vertexStart: 0,
-                                     vertexCount: 3)
+                                     vertexCount: quadVerts.count)
         
         renderEncoder.endEncoding()
         
@@ -174,8 +198,8 @@ class Renderer : NSObject, MTKViewDelegate {
     // Updates the view's contents upon receiving a change in layout, resolution, or size
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         // Save the size of the drawable to pass to the vertex shader.
-        viewportSize.x = UInt32(size.width)
-        viewportSize.y = UInt32(size.height)
+        viewportSize.x = Float(size.width)
+        viewportSize.y = Float(size.height)
     }
     
     // [Built in]
