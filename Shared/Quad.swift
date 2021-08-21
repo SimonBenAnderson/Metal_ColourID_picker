@@ -27,7 +27,7 @@ class Quad {
     var color:simd_float4 = [0,0,0,1]
     
     /// Scales the points
-    var scale:Float = 100.0
+    var scale:Float = 50.0
     
     var offset:simd_float2 = [0,0]
     

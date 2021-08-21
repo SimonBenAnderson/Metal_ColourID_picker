@@ -25,6 +25,8 @@ struct RasterizerData
     // and then passes the interpolated value to the fragment shader for each
     // fragment in the triangle.
     simd_float4 color;
+    
+    simd_float4 pickID; // colour of the pick ID rasterized
 };
 
 struct Vertex
@@ -32,6 +34,18 @@ struct Vertex
     simd_float2 position;
     simd_float4 color;
     simd_float4 colorID;
+};
+
+// This will hold both passes colour pass information
+//
+// color() = The input value read from a color attachment. The index indicates which color attachment to read from.
+//
+// reference: https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf
+//
+struct RenderPasses
+{
+    simd_float4 beautyPass   [[ color(0) ]]; // This is the default render output
+    simd_float4 colourIDPass [[ color(1) ]]; // Pass that will store the colourID
 };
 
 vertex RasterizerData vertexShader( uint vertexID [[vertex_id]],
@@ -56,11 +70,22 @@ vertex RasterizerData vertexShader( uint vertexID [[vertex_id]],
     // Pass the input color directly to the rasterizer.
     out.color = vertices[vertexID].color;
     
+    // Pass the pick id colour to the rasterizer object
+    out.pickID = vertices[vertexID].colorID;
+    
     return out;
 }
 
-fragment float4 fragmentShader(RasterizerData in [[stage_in]])
+fragment RenderPasses fragmentShader(RasterizerData in [[stage_in]])
 {
-    // Return the interpolated color.
-    return in.color;
+    // Instantiates the output object that will hold both beauty and pickID pass
+    RenderPasses passOut;
+    
+    // Sets the beauty pass, which is the data we will write to the viewport
+    passOut.beautyPass = in.color;
+    
+    // Sets the colour ID, which will be draw offscreen, and we will query
+    passOut.colourIDPass = in.pickID;
+    
+    return passOut;
 }

@@ -8,13 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    let vm: ViewModel
+    
+    init() {
+        vm = ViewModel()
+    }
+    
+    // SwiftUI hack to get a press/click that has the screen position where it occured
+    var pressWithPos : some Gesture {
+        
+        return DragGesture(minimumDistance: 0.0, coordinateSpace: .global)
+                .onEnded { data in
+                    pressTriggered(simd_float2(Float(data.location.x), Float(data.location.y)))
+                }
+    }
+    
     var body: some View {
         SwiftMTKView()
+            .gesture(pressWithPos)
     }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    
+    func pressTriggered(_ pos:simd_float2) {
+        vm.selectionEvent(pos)
     }
 }
