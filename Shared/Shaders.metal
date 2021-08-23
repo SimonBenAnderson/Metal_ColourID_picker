@@ -29,12 +29,14 @@ struct RasterizerData
     simd_float4 pickID; // colour of the pick ID rasterized
 };
 
+
 struct Vertex
 {
     simd_float2 position;
     simd_float4 color;
     simd_float4 colorID;
 };
+
 
 // This will hold both passes colour pass information
 //
@@ -47,6 +49,7 @@ struct RenderPasses
     simd_float4 beautyPass   [[ color(0) ]]; // This is the default render output
     simd_float4 colourIDPass [[ color(1) ]]; // Pass that will store the colourID
 };
+
 
 vertex RasterizerData vertexShader( uint vertexID [[vertex_id]],
                                    constant Vertex *vertices [[buffer(0)]], // Index of vertices data

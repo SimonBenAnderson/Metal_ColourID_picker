@@ -90,3 +90,44 @@ func colorVec4FromItemID(_ itemID:Int) -> simd_float4
     let b:Float = Float((itemID / (255 * 255)) % 255)
     return [r/255, g/255, b/255, 1.0]
 }
+
+
+// MARK:- Helper Functions
+
+
+/// Initialises the quad data that will be used for the renderer
+func setupQuad() -> Array<Quad> {
+    var quads:Array<Quad> = []
+    // Creates the new quads that will be drawn
+    let q1 = newQuad()
+    let q2 = newQuad()
+    let q3 = newQuad()
+    let q4 = newQuad()
+    let q5 = newQuad()
+    
+    quads.append(q1)
+    quads.append(q2)
+    quads.append(q3)
+    quads.append(q4)
+    quads.append(q5)
+    
+    q1.offset = [-200,  100]
+    q2.offset = [-200, -100]
+    q3.offset = [   0,    0]
+    q4.offset = [ 200,  100]
+    q5.offset = [ 200, -100]
+    
+    q1.color = [0.4, 0.4, 0.4, 1]
+    q2.color = [0.4, 0.4, 0.4, 1]
+    q3.color = [0.4, 0.4, 0.4, 1]
+    q4.color = [0.4, 0.4, 0.4, 1]
+    q5.color = [0.4, 0.4, 0.4, 1]
+    
+    q1.updateVerts()
+    q2.updateVerts()
+    q3.updateVerts()
+    q4.updateVerts()
+    q5.updateVerts()
+    
+    return quads
+}

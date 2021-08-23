@@ -5,34 +5,46 @@
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         BreakpointExtensionID = "Xcode.Breakpoint.RuntimeIssueBreakpoint">
          <BreakpointContent
-            uuid = "0E6520B6-4EB6-45A6-9B9D-3136528B0426"
+            uuid = "58A7624E-477D-48DB-A4F2-6BF24D0499CA"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Shared/Shaders.metal"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "vertexShader( uint vertexID [[vertex_id]], constant Vertex *vertices [[buffer(0)]], // Index of vertices data constant vector_float2 *viewportSizePointer [[buffer(1)]])"
-            landmarkType = "9">
+            breakpointStackSelectionBehavior = "1"
+            type = "8"
+            categories = "Metal Diagnostics">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7C3DBA2F-6EEE-4C89-9F5C-90DC9F25EBDD"
+            uuid = "75E51E13-AC81-44E5-B96A-B42B7373A89A"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shared/Renderer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
-            landmarkName = "setupQuad()"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
+            landmarkName = "draw(_:_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6EE587F8-DEB8-4DF3-AA7B-3A10E9D9DF61"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shared/Renderer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "268"
+            endingLineNumber = "268"
+            landmarkName = "draw(_:_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
