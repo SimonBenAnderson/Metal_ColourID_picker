@@ -19,32 +19,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "75E51E13-AC81-44E5-B96A-B42B7373A89A"
-            shouldBeEnabled = "No"
+            uuid = "36AF04E0-9434-41CE-8E7C-A6883B9923B2"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shared/Renderer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
-            landmarkName = "draw(_:_:)"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
+            landmarkName = "initTextures(width:height:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6EE587F8-DEB8-4DF3-AA7B-3A10E9D9DF61"
+            uuid = "2F1540B0-1470-42CE-B5AB-7A4DCFF109CA"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shared/Renderer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "268"
-            endingLineNumber = "268"
-            landmarkName = "draw(_:_:)"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "init(_:mtkView:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

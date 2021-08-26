@@ -56,6 +56,15 @@ class Renderer : NSObject, MTKViewDelegate {
     /// Holds the semaphore that will be used to sync the CPU and GPU
     var _inFlightSemaphore:DispatchSemaphore
     
+    // Textures
+    /// Texture used for beauty pass
+    var tex0_desc : MTLTextureDescriptor!
+    /// Texture used for colorID pass
+    var tex1_desc : MTLTextureDescriptor!
+    
+    var tex0 : MTLTexture!
+    var tex1 : MTLTexture!
+    
     /// SwiftMTKView is the wrapper to allow the MTKView to work in SwiftUI
     init(_ parent: SwiftMTKView, mtkView:MTKView) {
         print("Init Coordinator")
@@ -73,7 +82,7 @@ class Renderer : NSObject, MTKViewDelegate {
         // Use a 32-bit depth buffer
 //        view.depthStencilPixelFormat = .depth32Float
         // Sets the view to try and render at 120fps
-        view.preferredFramesPerSecond = 1
+        view.preferredFramesPerSecond = 120
         
 //        view.drawableSize = view.frame.size
         viewportSize.x = Float(view.frame.size.width)
@@ -144,7 +153,31 @@ class Renderer : NSObject, MTKViewDelegate {
             newBuffer.label = "Vertex Buffer \(i)"
             _vertexBuffers.append(newBuffer)
         }
+        
     }
+    
+    
+    func initTextures(width:Int, height:Int) {
+        tex0_desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: view.colorPixelFormat,
+                                                                 width: width,
+                                                                 height: height,
+                                                                 mipmapped: false)
+        
+        tex1_desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: view.colorPixelFormat,
+                                                                 width: width,
+                                                                 height: height,
+                                                                 mipmapped: false)
+        
+        tex0_desc.usage = [.renderTarget]
+        tex1_desc.usage = [.renderTarget]
+        
+        tex0_desc.storageMode = .private
+        tex1_desc.storageMode = .shared
+        
+        tex0 = device.makeTexture(descriptor: tex0_desc)
+        tex1 = device.makeTexture(descriptor: tex1_desc)
+    }
+    
     
     open func render(_ view: MTKView)
     {
@@ -166,7 +199,6 @@ class Renderer : NSObject, MTKViewDelegate {
         // Update the frame buffer index
         _currentBuffer = (_currentBuffer + 1) % MAX_FRAMES_IN_FLIGHT
         
-        print(_currentBuffer)
         // used for more granular debug logs from metal
 //        let desc = MTLCommandBufferDescriptor()
 //        desc.errorOptions = .encoderExecutionStatus
@@ -181,24 +213,6 @@ class Renderer : NSObject, MTKViewDelegate {
         let _width = Int(viewportSize.x)
         let _height = Int(viewportSize.y)
         
-        let tex0_desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: view.colorPixelFormat,
-                                                                 width: _width,
-                                                                 height: _height,
-                                                                 mipmapped: false)
-        let tex1_desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: view.colorPixelFormat,
-                                                                 width: _width,
-                                                                 height: _height,
-                                                                 mipmapped: false)
-
-        tex0_desc.usage = [.renderTarget]
-        tex1_desc.usage = [.renderTarget]
-        
-        tex0_desc.storageMode = .private
-        tex1_desc.storageMode = .shared
-        
-        let tex0 = device.makeTexture(descriptor: tex0_desc)
-        let tex1 = device.makeTexture(descriptor: tex1_desc)
-        
         renderPassDescriptor.colorAttachments[0].texture = tex0
         renderPassDescriptor.colorAttachments[1].texture = tex1
 
@@ -206,7 +220,6 @@ class Renderer : NSObject, MTKViewDelegate {
         renderPassDescriptor.colorAttachments[1].storeAction = .store
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
         renderPassDescriptor.colorAttachments[1].loadAction = .clear
-
         
         // Create a render command encoder.
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else { return }
@@ -291,6 +304,8 @@ class Renderer : NSObject, MTKViewDelegate {
         // Save the size of the drawable to pass to the vertex shader.
         viewportSize.x = Float(size.width)
         viewportSize.y = Float(size.height)
+        
+        initTextures(width: Int(size.width), height: Int(size.height))
     }
     
     // [Built in]
