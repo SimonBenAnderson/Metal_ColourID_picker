@@ -25,6 +25,9 @@ struct Vertex
 }
 
 class Renderer : NSObject, MTKViewDelegate {
+    /// Holds a reference pointer to the view model
+    var _viewModel : ViewModel
+    
     /// View that will be displaying what is rendered
     var parent: SwiftMTKView
     
@@ -68,10 +71,14 @@ class Renderer : NSObject, MTKViewDelegate {
     /// SwiftMTKView is the wrapper to allow the MTKView to work in SwiftUI
     init(_ parent: SwiftMTKView, mtkView:MTKView) {
         print("Init Coordinator")
-        
+                
         /// sets the SwiftMTKView as the parent
         self.parent = parent
         self.view = mtkView
+        
+        /// Assigns the Model Scene to the MetalView
+        _viewModel = self.parent._viewModel
+        
         
         // Use 4x MSAA multisampling
         view.sampleCount = 0
@@ -116,6 +123,8 @@ class Renderer : NSObject, MTKViewDelegate {
         
         super.init()
         
+        _viewModel.setRenderer(self)
+        
         let vertexFunction = metalLibrary!.makeFunction(name: "vertexShader")
         let fragmentFunction = metalLibrary!.makeFunction(name: "fragmentShader")
         
@@ -156,7 +165,11 @@ class Renderer : NSObject, MTKViewDelegate {
         
     }
     
-    
+    /// Initialises the Texture descriptors and instantiates textures using the descriptors
+    ///
+    /// tex0: is the standard beauty pass that one sees in the viewport
+    /// tex1: is the Colour ID pass that will be queried when a user triggeres a press event
+    ///
     func initTextures(width:Int, height:Int) {
         tex0_desc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: view.colorPixelFormat,
                                                                  width: width,
@@ -169,13 +182,23 @@ class Renderer : NSObject, MTKViewDelegate {
                                                                  mipmapped: false)
         
         tex0_desc.usage = [.renderTarget]
-        tex1_desc.usage = [.renderTarget]
+        tex1_desc.usage = [.renderTarget, .shaderRead]
         
         tex0_desc.storageMode = .private
+        
+        
+        #if os(OSX)
+        tex1_desc.storageMode = .managed
+        #elseif os(iOS)
         tex1_desc.storageMode = .shared
+        #endif
+        
         
         tex0 = device.makeTexture(descriptor: tex0_desc)
         tex1 = device.makeTexture(descriptor: tex1_desc)
+        
+        tex0.label = "BeautyPass"
+        tex1.label = "ColourIDPass"
     }
     
     
@@ -191,14 +214,9 @@ class Renderer : NSObject, MTKViewDelegate {
     }
     
     /// Stores the current frame buffer that is in use by the semaphore
-    var _currentBuffer:Int = 0
+//    var _currentBuffer:Int = 0
     
     open func draw(_ view: MTKView, _ commandBuffer_: MTLCommandBuffer) {
-        _inFlightSemaphore.wait(timeout: .distantFuture)
-        
-        // Update the frame buffer index
-        _currentBuffer = (_currentBuffer + 1) % MAX_FRAMES_IN_FLIGHT
-        
         // used for more granular debug logs from metal
 //        let desc = MTLCommandBufferDescriptor()
 //        desc.errorOptions = .encoderExecutionStatus
@@ -209,10 +227,7 @@ class Renderer : NSObject, MTKViewDelegate {
         
         // Obtain a renderPassDescriptor generated from the view's drawable textures.
         guard let renderPassDescriptor = view.currentRenderPassDescriptor else { return }
-        
-        let _width = Int(viewportSize.x)
-        let _height = Int(viewportSize.y)
-        
+                
         renderPassDescriptor.colorAttachments[0].texture = tex0
         renderPassDescriptor.colorAttachments[1].texture = tex1
 
@@ -255,13 +270,13 @@ class Renderer : NSObject, MTKViewDelegate {
         
         
         // Pass in the parameter data, using byte code.
-//        renderEncoder.setVertexBytes(quadVerts,
-//                                     length: MemoryLayout<Vertex>.stride * (quadVerts.count),
-//                                     index: 0)
+        renderEncoder.setVertexBytes(quadVerts,
+                                     length: MemoryLayout<Vertex>.stride * (quadVerts.count),
+                                     index: 0)
         
-        renderEncoder.setVertexBuffer(_vertexBuffers[_currentBuffer],
-                                      offset: 0,
-                                      index: 0)
+//        renderEncoder.setVertexBuffer(_vertexBuffers[_currentBuffer],
+//                                      offset: 0,
+//                                      index: 0)
         
         renderEncoder.setVertexBytes(&viewportSize,
                                      length: MemoryLayout<simd_uint2>.stride,
@@ -276,26 +291,45 @@ class Renderer : NSObject, MTKViewDelegate {
         
         // Create a Blit Command Encoder, which is used to copy data from one memory location to another using the GPU
         let blitEncoder = commandBuffer.makeBlitCommandEncoder()
-        
         // Copy's the data from tex0 to the view
         blitEncoder?.copy(from: tex0!, to:view.currentDrawable!.texture)
         blitEncoder?.endEncoding()
 
+        // Creates a Syncronise Blit Encoder
+        #if os(OSX)
+        let blitEncoder_Sync = commandBuffer.makeBlitCommandEncoder()
+        blitEncoder_Sync?.synchronize(resource: tex1)
+        blitEncoder_Sync?.endEncoding()
+        #elseif os(iOS)
+        #endif
+        
         // Schedules a present once the framebuffer is complete using the current drawable.
         guard let drawable = view.currentDrawable else { return }
         commandBuffer.present(drawable)
         
-        // Command Buffer completion handler - utilising closure expression
-        commandBuffer.addCompletedHandler({_ in
-            // DispatchSemaphore
-            print("Command Buffer completion - dispatch")
-            self._inFlightSemaphore.signal()
+        // Completion handler is triggered when the buffer has completed on the GPU
+        commandBuffer.addCompletedHandler({ _ in
+            let bytesPerPixel = 4
+
+            // The total number of bytes of the texture
+            let imageByteCount = self.tex1.width * self.tex1.height * bytesPerPixel
+
+            // The number of bytes for each image row
+            let bytesPerRow = self.tex1.width * bytesPerPixel
+
+            // An empty buffer that will contain the image
+            var src = [UInt8](repeating: 0, count: Int(imageByteCount))
+
+            // Gets the bytes from the texture
+            let region = MTLRegionMake2D(0, 0, self.tex1.width, self.tex1.height)
+            self.tex1.getBytes(&src, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
+
+            self._viewModel.colourID_buffer = src
         })
         
         // Finalize rendering here and push the comand buffer to the GPU.
         commandBuffer.commit()
-        
-//        commandBuffer.waitUntilCompleted()
+        commandBuffer.waitUntilCompleted()
     }
 
     // [Built in]

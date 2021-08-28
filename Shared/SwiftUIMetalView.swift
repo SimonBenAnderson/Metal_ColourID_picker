@@ -21,7 +21,10 @@ typealias ViewRepresentableContext = UIViewRepresentableContext
 
 // Creating a new MetalView object that will work in SwiftUI
 struct SwiftMTKView: ViewRepresentable {
-
+    
+    /// The ViewModel, that will pass data to the renderer from the SwiftView
+    var _viewModel : ViewModel
+    
     func makeCoordinator() -> Renderer {
         let mtkView = MTKView()
         
@@ -39,6 +42,7 @@ struct SwiftMTKView: ViewRepresentable {
     }
     
     func updateNSView(_ nsView: MTKView, context: ViewRepresentableContext<SwiftMTKView>) {
+        context.coordinator._viewModel = _viewModel
     }
     
     #elseif os(iOS)
@@ -48,6 +52,7 @@ struct SwiftMTKView: ViewRepresentable {
     }
     
     func updateUIView(_ uiView: MTKView, context: ViewRepresentableContext<SwiftMTKView>) {
+        context.coordinator._viewModel = _viewModel
     }
     
     #endif
