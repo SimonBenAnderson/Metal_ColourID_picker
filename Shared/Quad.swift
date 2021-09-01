@@ -54,6 +54,10 @@ class Quad {
                      [ 1,-1]]
     }
     
+    func setScale(_ size:Float) {
+        scale = size
+        updateVerts()
+    }
     
     /// Brute force method to generate the vertices for the first time
     func updateVerts() {
@@ -111,7 +115,7 @@ func setupQuad() -> Array<Quad> {
     quads.append(q4)
     quads.append(q5)
     
-    q1.offset = [-200,  100]
+    q1.offset = [-400,  300]
     q2.offset = [-200, -100]
     q3.offset = [   0,    0]
     q4.offset = [ 200,  100]
@@ -122,6 +126,8 @@ func setupQuad() -> Array<Quad> {
     q3.color = [0.4, 0.4, 0.4, 1]
     q4.color = [0.4, 0.4, 0.4, 1]
     q5.color = [0.4, 0.4, 0.4, 1]
+    
+    q1.setScale(200)
     
     q1.updateVerts()
     q2.updateVerts()

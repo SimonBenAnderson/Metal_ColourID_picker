@@ -3,9 +3,11 @@
 ## Overview
 Setting up Color pick id
 
-- Creating a second render pass
-- Using Blitt command to copy data
+- [x] Creating a second render pass
+- [x] Using Blitt command to copy data
 
+- [ ] iOS needs to be setup to copy correctly
+- [ ] Is the current data transfer the best implementation
 
 ## Notes:
 
