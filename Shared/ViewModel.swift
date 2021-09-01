@@ -22,7 +22,7 @@ class ViewModel {
     
     var renderer : Renderer!
     
-    /// Texture buffer data starts from the **top left** of the screen and is stored row first.
+    /// Texture buffer data that stores the colour picker data that was copied from the GPU
     /// eg. Row_0, Row_1, Row_2
     var colourID_buffer : [UInt8]?
     
@@ -40,6 +40,7 @@ class ViewModel {
         // Gets the screen scale depending on the monitor settings
         let screenScale :Int = Int(NSScreen.main!.backingScaleFactor)
         
+        /// As the y position starts at the bottom, but the data is serialised from the top of the screen we have to reverse the y values, which is why it has been subtracted from the size of the y axis.
         let texSpacePoint : (x:Int, y:Int) = (x: Int(pos.x) * screenScale,
                                               y: Int(renderer.viewportSize.y) - Int(pos.y) * screenScale)
         

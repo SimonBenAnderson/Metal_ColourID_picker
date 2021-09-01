@@ -10,10 +10,6 @@ import MetalKit
 import SwiftUI
 import simd
 
-// MARK:- CONSTANTS
-
-/// The number of frame buffers active. refer to README.md regarding the implementation
-let MAX_FRAMES_IN_FLIGHT:Int = 3
 
 // MARK:- COORDINATOR / RENDERER
 struct Vertex
@@ -45,20 +41,13 @@ class Renderer : NSObject, MTKViewDelegate {
     /// Holds all the compiled metal files
     var metalLibrary:MTLLibrary?
     
-    // A series of buffers containing dynamically-updated vertices.
-    // TODO: I would have created a fixed array, but Swift does not allow for it at the time of writing this
-    var _vertexBuffers: Array<MTLBuffer> = []
-    
     // The current size of the view, used as an input to the vertex shader
     // Initialises the variable, as it will have its values populated on init
     var viewportSize: simd_float2 = simd_float2()
     
     /// List of quad objects that will be drawn on screen
     var quads:Array<Quad> = []
-    
-    /// Holds the semaphore that will be used to sync the CPU and GPU
-    var _inFlightSemaphore:DispatchSemaphore
-    
+        
     // Textures
     /// Texture used for beauty pass
     var tex0_desc : MTLTextureDescriptor!
@@ -78,23 +67,22 @@ class Renderer : NSObject, MTKViewDelegate {
         
         /// Assigns the Model Scene to the MetalView
         _viewModel = self.parent._viewModel
-        
-        
+              
         // Use 4x MSAA multisampling
         view.sampleCount = 0
         // Clear to solid white
         view.clearColor = MTLClearColorMake(0.0, 0.35, 0.35, 1)
+        // Sets the view to try and render at 120fps
+        view.preferredFramesPerSecond = 120
+        
+//        view.drawableSize = view.frame.size / 2
+        viewportSize.x = Float(view.frame.size.width)
+        viewportSize.y = Float(view.frame.size.height)
+        
         // Use a BGRA 8-bit normalized texture for the drawable
 //        view.colorPixelFormat = .bgra8Unorm
         // Use a 32-bit depth buffer
 //        view.depthStencilPixelFormat = .depth32Float
-        // Sets the view to try and render at 120fps
-        view.preferredFramesPerSecond = 120
-        
-//        view.drawableSize = view.frame.size
-        viewportSize.x = Float(view.frame.size.width)
-        viewportSize.y = Float(view.frame.size.height)
-        
         // needed for ZDepth
 //        view.depthStencilPixelFormat = .depth32Float
         
@@ -117,9 +105,6 @@ class Renderer : NSObject, MTKViewDelegate {
         
         /// Compiles all .metal files together into one
         metalLibrary = device.makeDefaultLibrary()
-        
-        /// Creates the Semaphore, with the amount of buffers that will be in use
-        _inFlightSemaphore = DispatchSemaphore(value: MAX_FRAMES_IN_FLIGHT)
         
         super.init()
         
@@ -151,18 +136,6 @@ class Renderer : NSObject, MTKViewDelegate {
         view.device = device
         
         quads = setupQuad()
-        
-        /// Setup the draw call buffers
-        /// Generates all the frame buffers that will be used
-        for i in 0..<MAX_FRAMES_IN_FLIGHT {
-            // calculate the memory stride of a quad
-            let quad_stride:Int = quads.count * quads[0]._vertices.count
-            let newBuffer:MTLBuffer = device.makeBuffer(length: MemoryLayout<Vertex>.stride * (quad_stride ),
-                              options: .storageModeShared)!
-            newBuffer.label = "Vertex Buffer \(i)"
-            _vertexBuffers.append(newBuffer)
-        }
-        
     }
     
     /// Initialises the Texture descriptors and instantiates textures using the descriptors
@@ -213,8 +186,6 @@ class Renderer : NSObject, MTKViewDelegate {
         draw(view, commandBuffer)
     }
     
-    /// Stores the current frame buffer that is in use by the semaphore
-//    var _currentBuffer:Int = 0
     
     open func draw(_ view: MTKView, _ commandBuffer_: MTLCommandBuffer) {
         // used for more granular debug logs from metal
@@ -263,20 +234,10 @@ class Renderer : NSObject, MTKViewDelegate {
         storageMode = MTLResourceOptions.storageModeShared
         #endif
         
-        /// Creates a buffer that will be managed between the cpu and gpu
-//        let buffer = device.makeBuffer(length: MemoryLayout<Vertex>.stride * (quadVerts.count), options: storageMode)
-//        
-//        let bufferStartPointer = buffer?.contents()
-        
-        
         // Pass in the parameter data, using byte code.
         renderEncoder.setVertexBytes(quadVerts,
                                      length: MemoryLayout<Vertex>.stride * (quadVerts.count),
                                      index: 0)
-        
-//        renderEncoder.setVertexBuffer(_vertexBuffers[_currentBuffer],
-//                                      offset: 0,
-//                                      index: 0)
         
         renderEncoder.setVertexBytes(&viewportSize,
                                      length: MemoryLayout<simd_uint2>.stride,
@@ -295,12 +256,13 @@ class Renderer : NSObject, MTKViewDelegate {
         blitEncoder?.copy(from: tex0!, to:view.currentDrawable!.texture)
         blitEncoder?.endEncoding()
 
-        // Creates a Syncronise Blit Encoder
         #if os(OSX)
+        // Creates a Synchronise Blit Encoder
         let blitEncoder_Sync = commandBuffer.makeBlitCommandEncoder()
         blitEncoder_Sync?.synchronize(resource: tex1)
         blitEncoder_Sync?.endEncoding()
         #elseif os(iOS)
+        // iOS does not need this as it has shared textures, not managed( managed is not available on iOS )
         #endif
         
         // Schedules a present once the framebuffer is complete using the current drawable.

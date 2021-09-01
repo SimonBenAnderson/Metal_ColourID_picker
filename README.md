@@ -5,8 +5,7 @@ Setting up Color pick id
 
 - [x] Creating a second render pass
 - [x] Using Blitt command to copy data
-
-- [ ] iOS needs to be setup to copy correctly
+- [X] iOS needs to be setup to copy correctly
 - [ ] Is the current data transfer the best implementation
 
 ## Notes:
@@ -26,6 +25,8 @@ https://developer.apple.com/documentation/metal/synchronization/synchronizing_cp
 ## TODO
 
 - [ ] Create a button to alternate between passes, so the viewer can see the id pass 
+
+- [ ] Instead of copying the entire image, copy just the pixel at the point of press occuring
 
 ## Process
 
