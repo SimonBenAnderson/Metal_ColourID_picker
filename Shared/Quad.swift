@@ -87,12 +87,13 @@ func newQuad() -> Quad {
 func colorVec4FromItemID(_ itemID:Int) -> simd_float4
 {
     if (itemID<0) {
-        return [0.0, 0.0, 0.0, 1.0]
+        return [0.0, 0.0, 0.0, 0.0]
     }
     let r:Float = Float(itemID % 255)
     let g:Float = Float((itemID / 255) % 255)
     let b:Float = Float((itemID / (255 * 255)) % 255)
-    return [r/255, g/255, b/255, 1.0]
+    let a:Float = Float((itemID / (255 * 255 * 255)) % 255) // experimental, allowing for IDs to be encoded.
+    return [r/255, g/255, b/255, a/255]
 }
 
 

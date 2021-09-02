@@ -53,7 +53,7 @@ class ViewModel {
                                            colourID_buffer![idx + 2],
                                            colourID_buffer![idx + 3]]
         
-        return [ Int(pixel_colour[0]), Int(pixel_colour[1]), Int(pixel_colour[2]) ]
+        return [ Int(pixel_colour[0]), Int(pixel_colour[1]), Int(pixel_colour[2]), Int(pixel_colour[3]) ]
     }
     
     #elseif os(iOS)
@@ -73,7 +73,7 @@ class ViewModel {
                                            colourID_buffer![idx + 2],
                                            colourID_buffer![idx + 3]]
         
-        return [ Int(pixel_colour[0]), Int(pixel_colour[1]), Int(pixel_colour[2]) ]
+        return [ Int(pixel_colour[0]), Int(pixel_colour[1]), Int(pixel_colour[2]), Int(pixel_colour[3]) ]
     }
     #endif
     

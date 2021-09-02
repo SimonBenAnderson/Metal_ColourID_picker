@@ -21,6 +21,8 @@ There is a drawing issue when every second frame sometimes seems to be  drawn as
 Reference:
 https://developer.apple.com/documentation/metal/synchronization/synchronizing_cpu_and_gpu_work
 
+**Fix**: Was to put the texture creation outside of the draw loop
+
 
 ## TODO
 

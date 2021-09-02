@@ -47,7 +47,8 @@ class Renderer : NSObject, MTKViewDelegate {
     
     /// List of quad objects that will be drawn on screen
     var quads:Array<Quad> = []
-        
+    var quadVerts:Array<Vertex> = []
+    
     // Textures
     /// Texture used for beauty pass
     var tex0_desc : MTLTextureDescriptor!
@@ -75,7 +76,6 @@ class Renderer : NSObject, MTKViewDelegate {
         // Sets the view to try and render at 120fps
         view.preferredFramesPerSecond = 120
         
-//        view.drawableSize = view.frame.size / 2
         viewportSize.x = Float(view.frame.size.width)
         viewportSize.y = Float(view.frame.size.height)
         
@@ -87,7 +87,6 @@ class Renderer : NSObject, MTKViewDelegate {
 //        view.depthStencilPixelFormat = .depth32Float
         
         view.colorPixelFormat = .bgra8Unorm
-        
         
         /// The view will use Textures to display what it shows, This allows you to write data into a texture, perform any manipulatin on the texture and then show it. For us we are currently not performing any manipulation.
         view.framebufferOnly = false
@@ -123,6 +122,9 @@ class Renderer : NSObject, MTKViewDelegate {
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = view.colorPixelFormat
         pipelineStateDescriptor.colorAttachments[1].pixelFormat = view.colorPixelFormat
         
+        /// Colour Pick ID has its blending disabled, this allows the Aplha value to form part of the encoded id, allowing for more id's
+        pipelineStateDescriptor.colorAttachments[1].isBlendingEnabled = false
+        
         do {
         try  renderPipelineState = device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         }
@@ -136,6 +138,10 @@ class Renderer : NSObject, MTKViewDelegate {
         view.device = device
         
         quads = setupQuad()
+        // converts quad to vertex data
+        for quad in quads {
+            quadVerts.append(contentsOf: quad._vertices)
+        }
     }
     
     /// Initialises the Texture descriptors and instantiates textures using the descriptors
@@ -159,13 +165,11 @@ class Renderer : NSObject, MTKViewDelegate {
         
         tex0_desc.storageMode = .private
         
-        
         #if os(OSX)
         tex1_desc.storageMode = .managed
         #elseif os(iOS)
         tex1_desc.storageMode = .shared
         #endif
-        
         
         tex0 = device.makeTexture(descriptor: tex0_desc)
         tex1 = device.makeTexture(descriptor: tex1_desc)
@@ -207,6 +211,9 @@ class Renderer : NSObject, MTKViewDelegate {
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
         renderPassDescriptor.colorAttachments[1].loadAction = .clear
         
+        /// When you click on dead space, the selection colour return all zero  values
+        renderPassDescriptor.colorAttachments[1].clearColor = .init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+        
         // Create a render command encoder.
         guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else { return }
 
@@ -217,14 +224,9 @@ class Renderer : NSObject, MTKViewDelegate {
                                               width: Double(viewportSize.x),
                                               height: Double(viewportSize.y),
                                               znear: 0.0,
-                                              zfar: 1.0))
+                                              zfar:  1.0))
         
         renderEncoder.setRenderPipelineState(renderPipelineState)
-        
-        var quadVerts:Array<Vertex> = []
-        for quad in quads {
-            quadVerts.append(contentsOf: quad._vertices)
-        }
         
         /// Setting up the different storage options for different devices
         var storageMode : MTLResourceOptions
