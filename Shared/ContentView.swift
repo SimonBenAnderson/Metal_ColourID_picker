@@ -11,8 +11,9 @@ struct ContentView: View {
     let vm: ViewModel
     
     // Global space is used for OSX, while iOS uses local, as iOS has more screen space that is used by the sytem.
+    // Decided to go with local space for both, as the view encompasses the entire apps realestate.
     #if os(OSX)
-    let coordinateSpace = CoordinateSpace.global
+    let coordinateSpace = CoordinateSpace.local
     #elseif os(iOS)
     let coordinateSpace = CoordinateSpace.local
     #endif

@@ -42,7 +42,8 @@ class ViewModel {
         
         /// As the y position starts at the bottom, but the data is serialised from the top of the screen we have to reverse the y values, which is why it has been subtracted from the size of the y axis.
         let texSpacePoint : (x:Int, y:Int) = (x: Int(pos.x) * screenScale,
-                                              y: Int(renderer.viewportSize.y) - Int(pos.y) * screenScale)
+                                              //y: Int(renderer.viewportSize.y) - Int(pos.y) * screenScale)
+                                              y: Int(pos.y) * screenScale)
         
         // Takes the X, Y position and converts it into an index value, that will be used to retrieve the pixel position.
         //   4 = the number of Floats that make up the colour per a pixel
@@ -59,10 +60,18 @@ class ViewModel {
     #elseif os(iOS)
     /// Returns the pixel at the specified position
     func getPixelFromBufferAtPosition(_ pos:simd_int2) -> Array<Int> {
+        
+        // I was using the UI Scale amount, but it seems that the MTKView has its own scale amount.
+        let CONTENT_SCALE = Float(renderer.view.contentScaleFactor.native)
+
         let screenScale :Int = Int(UIScreen.main.scale)
         
-        let texSpacePoint : (x:Int, y:Int) = (x: Int(pos.x) * screenScale,
-                                              y: Int(pos.y) * screenScale)
+// Commented out for testing CONTENT SCALE
+//        let texSpacePoint : (x:Int, y:Int) = (x: Int(pos.x) * screenScale,
+//                                              y: Int(pos.y) * screenScale)
+        let texSpacePoint : (x:Int, y:Int) = (x: Int(Float(pos.x) * CONTENT_SCALE),
+                                              y: Int(Float(pos.y) * CONTENT_SCALE))
+
         
         // Takes the X, Y position and converts it into an index value, that will be used to retrieve the pixel position.
         //   4 = the number of Floats that make up the colour per a pixel

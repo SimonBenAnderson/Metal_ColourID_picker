@@ -136,5 +136,18 @@ func setupQuad() -> Array<Quad> {
     q4.updateVerts()
     q5.updateVerts()
     
+    // Uncommented, to generate random color quads
+//    for index in 0..<9 {
+//        var quad = newQuad()
+//        quad.color = [Float.random(in:0.0..<1.0),
+//                      Float.random(in:0.0..<1.0),
+//                      Float.random(in:0.0..<1.0), 1]
+//        quad.offset = [Float.random(in: -500..<500),  Float.random(in: -500..<500)]
+//        quad.setScale(Float.random(in: 10..<200))
+//        quad.updateVerts()
+//
+//        quads.append(quad)
+//    }
+    
     return quads
 }
